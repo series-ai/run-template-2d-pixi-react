@@ -68,14 +68,6 @@ Every intended edit point is marked with an `ADAPT:` comment in the source — s
 - Large assets go in `public/cdn-assets/` and load at runtime via `RundotGameAPI.cdn.fetchAsset()` — see `public/cdn-assets/README.md` for the Pixi loading pattern.
 - Need storage, ads, haptics, or IAP? The [RundotGameAPI docs](https://series-1.gitbook.io/rundot-docs) walk through every API with examples.
 
-## Build Notes
-
-- `react` / `react-dom` are pinned to **exactly 19.2.4** on purpose: the SDK's Vite plugin externalizes them at build time so the RUN host serves them (smaller bundle, cached across games). The externalization only engages on an exact version match — if you bump React, it silently falls back to bundling. Pixi and Tailwind are always bundled.
-- `npm run build:bundled` produces a fully standalone bundle (no host-served libraries) if you need one.
-- `firebase` must stay in `devDependencies`: the SDK dynamically imports `firebase/app` without declaring it — removing it breaks `vite build`.
-- `base: './'` and the `dist/` output folder are required by RUN deploy; don't change them.
-- This template renders its own loading screen, so don't pass `--uses-preloader` to `rundot init`. The alternative is the host's native loader (`RundotGameAPI.preloader.*`) with the preloader enabled — fine too, but don't do both.
-
 ## Need More Guidance?
 
 - SDK + platform docs: <https://series-1.gitbook.io/rundot-docs>

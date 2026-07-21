@@ -29,6 +29,7 @@
 - **Lifecycles** — onPause/onResume: freeze/unfreeze (store.paused → ticker). onSleep: persist progress (the reliable hook). onQuit: last-chance flush (may not fire on hard close). Never fire fresh SDK RPCs from sleep/quit handlers.
 - **Assets** — Bundled assets go in `src/assets/manifest.ts` (critical vs deferred) and are warmed at boot with progress. CDN assets (`public/cdn-assets/`) load on demand via `RundotGameAPI.cdn.fetchAsset()`.
 - **Embedded libraries** — `react`/`react-dom` are pinned to exactly 19.2.4 so `rundotGameLibrariesPlugin()` externalizes them at build (host/CDN serves them). Do not bump React casually: a version mismatch silently falls back to bundling. `npm run build:bundled` forces a standalone bundle. Pixi is always bundled.
+- **Dependency gotchas** — `firebase` must stay in `devDependencies`: the SDK dynamically imports `firebase/app` without declaring it, and removing it breaks `vite build`. The `allowScripts` field in package.json silences npm's install-script warnings; keep entries name-only (unpinned) so dependency bumps don't re-trigger them.
 
 ## What to Modify
 
