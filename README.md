@@ -1,6 +1,6 @@
 # Pixi.js + React + RundotGameAPI Template
 
-Start a RUN.game-ready 2D game in minutes. This repo wires up **Pixi.js v8** (game rendering), **React 19** (menus/HUD), **Tailwind CSS v4** (styling), TypeScript, Vite, and the **RundotGameAPI SDK** — with the proper boot order, an asset-warming loading screen, host lifecycle handling, and the viewport/deploy setup production RUN games use. For more information, see the [RUN.game developer docs](https://series-1.gitbook.io/rundot-docs).
+Start a RUN.game-ready 2D game in minutes. This repo wires up Pixi.js v8, React 19, Tailwind CSS v4, TypeScript, Vite, and the RundotGameAPI SDK so you can focus on vibes, not setup. For more information, see the [RUN.game developer docs](https://series-1.gitbook.io/rundot-docs).
 
 ## What You Need
 
