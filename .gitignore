@@ -8,4 +8,5 @@ Thumbs.db
 .vscode/
 .idea/
 coverage/
-.rundot-docs
+rundot/docs/
+.rundot-docs/
