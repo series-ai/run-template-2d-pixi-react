@@ -29,8 +29,8 @@
         "protobufjs": true
     },
     "dependencies": {
-        "@series-inc/rundot-game-sdk": "^5.23.0",
-        "pixi.js": "^8.18.1",
+        "@series-inc/rundot-game-sdk": "5.28.1",
+        "pixi.js": "8.19.0",
         "react": "19.2.4",
         "react-dom": "19.2.4"
     },
