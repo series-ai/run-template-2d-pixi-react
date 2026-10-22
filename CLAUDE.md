@@ -3,7 +3,7 @@
 ## File Structure (as-shipped)
 
 - **src/main.tsx** — Entry point. The boot sequence, numbered 1–8; the ORDER matters (SDK init → save load → React mount → boot-cover lift → asset warm → menu → lifecycles → fire-and-forget analytics). Add work at the `ADAPT:` points; don't reorder.
-- **src/sdk/runSdk.ts** — `initSdk()` (awaits `RundotGameAPI.initializeAsync()`, never throws — local dev without the host runs SDK-less) and `registerLifecycles()` for all six host hooks. `sdkReady()` tells you whether the host answered.
+- **src/sdk/runSdk.ts** — `initSdk()` (checks context and cached profile, never throws — local dev without the host runs SDK-less) and `registerLifecycles()` for all six host hooks. `sdkReady()` tells you whether the host answered.
 - **src/state/store.ts** — Tiny external store (`useSyncExternalStore`) bridging game code ↔ React. `store.patch({...})` from anywhere; `useStore(selector)` in components. Exports the `AppState` type — add game-facing UI state fields here.
 - **src/assets/manifest.ts** — Asset list in two tiers: `critical` (awaited by the loading screen) and `deferred` (loads in background).
 - **src/assets/preload.ts** — `warmAssets(onProgress)` via Pixi `Assets` bundles.

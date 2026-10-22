@@ -1,36 +1,41 @@
 /**
- * Thin app-shell wrapper around the RUN SDK: one-time init + lifecycle
+ * Thin app-shell wrapper around the RUN SDK: readiness check + lifecycle
  * registration. System templates (save, shop, ads, ...) import the SDK
- * directly; this module only owns the boot-time concerns.
+ * directly; this module owns boot-time checks and lifecycle hooks.
  *
- * Posture (applies to ALL SDK usage): every RundotGameAPI call can reject,
- * and an unhandled rejection crashes the game — so everything here is
- * try/catch'd, and outside the RUN host (plain `vite dev` in a browser) the
- * app must boot and run anyway.
+ * The SDK starts initialization when its /api module loads. That module uses
+ * top-level await, but it catches initialization failures. Check context, then
+ * getProfile(), to confirm a valid cached profile. Keep boot alive when the host
+ * is unavailable.
+ *
+ * Every RundotGameAPI call can reject, and an unhandled rejection crashes the
+ * game. Catch errors at every SDK boundary.
  */
 import RundotGameAPI from '@series-inc/rundot-game-sdk/api';
-// Type-only import from the package root (the /api entry doesn't re-export it);
+// Type-only import from the package root (the /api entry does not re-export it);
 // erased at build time, so no extra runtime code is pulled in.
 import type { Subscription } from '@series-inc/rundot-game-sdk';
 
 let _ready = false;
 
-/** True once initializeAsync resolved — i.e. the RUN host (or its dev mock) answered. */
 export function sdkReady(): boolean {
     return _ready;
 }
 
 /**
- * Initialize the SDK. Call once, first thing in boot, before ANY other SDK
- * call. Never throws: local dev without the host logs a warning and the game
- * runs SDK-less (storage/IAP/etc. degrade in their own modules).
+ * Check whether automatic SDK initialization produced a valid cached profile.
+ * Never throws: a failed check logs a warning and the game still boots.
  */
 export async function initSdk(): Promise<boolean> {
     try {
-        await RundotGameAPI.initializeAsync();
+        if (!RundotGameAPI.context) {
+            throw new Error('RUN host initialization did not complete');
+        }
+        RundotGameAPI.getProfile();
         _ready = true;
     } catch (err) {
-        console.warn('[runSdk] initializeAsync failed — running without the RUN host (local dev?)', err);
+        _ready = false;
+        console.warn('[runSdk] RUN host is unavailable; continuing without it', err);
     }
     return _ready;
 }
@@ -38,7 +43,7 @@ export async function initSdk(): Promise<boolean> {
 /**
  * Lifecycle callbacks are `() => void` per the SDK types. Async handlers are
  * fine to pass: a Promise-returning function is assignable where a void
- * return is expected (the SDK just won't await it).
+ * return is expected (the SDK does not await it).
  */
 export type LifecycleCallback = () => void;
 
